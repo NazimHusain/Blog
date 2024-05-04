@@ -20,16 +20,31 @@ class UserLoginSerializer(serializers.Serializer):
         
 
 
-
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserModels.Tag
 
         fields = ("id","name")
 
-class PostSerializer(serializers.ModelSerializer):
+class PostGETSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True, read_only=True)
     class Meta:
         model = UserModels.Post
         fields = ("id","title","content", "tags")
-        
+
+   
+
+class PostSerializer(serializers.ModelSerializer):
+    tags_id = serializers.ListSerializer(child=serializers.IntegerField(), required=False,allow_null=True)
+    class Meta:
+        model = UserModels.Post
+        fields = ("id","title","content", "tags_id")
+
+    def create(self, validated_data):
+        tags = validated_data.pop("tags_id", None)
+        print(tags)
+        instance = UserModels.Post.objects.create(**validated_data)
+        if tags:
+            instance.tags.add(*tags)
+        return instance
+    

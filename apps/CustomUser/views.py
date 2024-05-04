@@ -121,8 +121,15 @@ class PostSearchAPIView(APIView):
         else:
             post = UserModels.Post.objects.all()
         result_page = pagination_class.paginate_queryset(post, request)
-        serialized = serializers.PostSerializer(result_page, many=True, context={"request": request})
+        serialized = serializers.PostGETSerializer(result_page, many=True, context={"request": request})
         return pagination_class.get_paginated_response(serialized.data)
+    
+    def post(self: "PostSearchAPIView", request:Request,version:str) -> Response:
+        serializer = serializers.PostSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
     
 
 class PostDetails(APIView):
@@ -133,6 +140,7 @@ class PostDetails(APIView):
     
 
 
+    
     
 
 
