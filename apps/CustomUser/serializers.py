@@ -48,3 +48,12 @@ class PostSerializer(serializers.ModelSerializer):
             instance.tags.add(*tags)
         return instance
     
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserModels.Comment
+        fields = ('id', 'user', 'post', 'content')
+        extra_kwargs = {'user': {'required': False}} 
+
+

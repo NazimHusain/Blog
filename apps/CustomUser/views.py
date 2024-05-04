@@ -140,7 +140,14 @@ class PostDetails(APIView):
     
 
 
-    
+class CommentAPIView(APIView):
+    def post(self: "TagAPIView", request:Request, version:str) -> Response:
+        serializer = serializers.CommentSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user) 
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+
     
 
 
